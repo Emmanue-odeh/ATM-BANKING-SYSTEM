@@ -1,0 +1,47 @@
+{
+    "5577359321": {
+        "name": "Emmanuel odeh",
+        "phone": "09130837623",
+        "pin": "1234",
+        "balance": 0,
+        "transactions": []
+    },
+    "2455339747": {
+        "name": "Emmy nice",
+        "phone": "07087245436",
+        "pin_salt": "732fe8f70c0423859be0859fdebb2e97",
+        "pin_hash": "fa283fa9a527a2577b04838844c5f9c806d86891882edf1ea2f3c0c1262d15f3",
+        "balance": 8000,
+        "transactions": [
+            {
+                "type": "Deposit",
+                "amount": 10000,
+                "date": "2026-11-10 15:35:15"
+            },
+            {
+                "type": "Withdrawal",
+                "amount": 2000,
+                "date": "2026-11-10 15:35:24"
+            }
+        ]
+    },
+    "8884870248": {
+        "name": "onoja solomon",
+        "phone": "08036339199",
+        "pin_salt": "d8feffc161f4f506b7b7a093127688ff",
+        "pin_hash": "38419d3764b80db410d51211917a1566e6ae22ed23ebd45535f1640ed0a9e9e6",
+        "balance": 3000,
+        "transactions": [
+            {
+                "type": "Deposit",
+                "amount": 5000,
+                "date": "2026-11-10 16:22:45"
+            },
+            {
+                "type": "Withdrawal",
+                "amount": 2000,
+                "date": "2026-11-10 16:23:02"
+            }
+        ]
+    }
+}
