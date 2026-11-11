@@ -43,5 +43,24 @@
                 "date": "2026-11-10 16:23:02"
             }
         ]
+    },
+    "1196026374": {
+        "name": "zion ojonele",
+        "phone": "07041997278",
+        "pin_salt": "c3353c1d0661b36c34341832b12f7d98",
+        "pin_hash": "36c7255a621f837d800f69c32f28bba891f8dcdde3d93f536b3ec19cd3164662",
+        "balance": 0,
+        "transactions": [
+            {
+                "type": "Deposit",
+                "amount": 2000,
+                "date": "2026-11-11 11:00:15"
+            },
+            {
+                "type": "Withdrawal",
+                "amount": 2000,
+                "date": "2026-11-11 11:01:18"
+            }
+        ]
     }
 }

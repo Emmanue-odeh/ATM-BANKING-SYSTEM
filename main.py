@@ -44,7 +44,7 @@ def verify_pin(account, pin):
 
 def generate_account_number(accounts):
     while True:
-        number = str(secrets.randbelow(9000000000) + 1000000000)
+        number = str(secrets.randbelow(8000000000) + 1000000000)
         if number not in accounts:
             return number
 
