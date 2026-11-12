@@ -84,7 +84,7 @@ This allows account information to remain available when the application is rest
 4. Run the following command:
 
 ```bash
-python main.py
+python main.py / & "$HOME\.local\bin\python3.14.exe" gui.py
 ```
 
 ## Project Structure

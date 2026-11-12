@@ -1,220 +1,242 @@
 
 import tkinter as tk
 
-# =====================================
-# MAIN APPLICATION WINDOW
-# =====================================
+# ==========================================
+# SMART ATM - PREMIUM DARK BANKING DASHBOARD
+# ==========================================
 
 root = tk.Tk()
 
-root.title("SMART ATM | Digital Banking")
-root.geometry("1100x700")
-root.minsize(950, 600)
-root.configure(bg="#F4F7FC")
+root.title("Smart ATM | Digital Banking")
+root.geometry("1250x780")
+root.minsize(1100, 700)
+root.configure(bg="#090B16")
 
 
-# =====================================
+# ==========================================
 # COLOUR PALETTE
-# =====================================
+# ==========================================
 
-NAVY = "#14213D"
-BLUE = "#2563EB"
+BG = "#090B16"
+SIDEBAR = "#0D1020"
+CARD = "#111528"
+CARD_LIGHT = "#171C35"
+
+BLUE = "#315BFF"
+PURPLE = "#7047FF"
+CYAN = "#26C6F4"
+
 WHITE = "#FFFFFF"
-BACKGROUND = "#F4F7FC"
-TEXT = "#263449"
-MUTED = "#718096"
+TEXT = "#E8ECFF"
+MUTED = "#858DAA"
+BORDER = "#252B46"
 
 
-# =====================================
-# MAIN WINDOW LAYOUT
-# =====================================
+# ==========================================
+# MAIN WINDOW STRUCTURE
+# ==========================================
 
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=1)
 
 
-# =====================================
-# SIDEBAR
-# =====================================
+# ==========================================
+# LEFT SIDEBAR
+# ==========================================
 
 sidebar = tk.Frame(
     root,
-    bg=NAVY,
-    width=240
+    bg=SIDEBAR,
+    width=215
 )
 
 sidebar.grid(row=0, column=0, sticky="ns")
 sidebar.grid_propagate(False)
 
 
-# SMART ATM BRANDING
-
-brand_label = tk.Label(
-    sidebar,
-    text="SMART ATM",
-    font=("Arial", 22, "bold"),
-    bg=NAVY,
-    fg=WHITE
-)
-
-brand_label.pack(pady=(35, 5))
-
-
-subtitle_label = tk.Label(
-    sidebar,
-    text="DIGITAL BANKING",
-    font=("Arial", 9),
-    bg=NAVY,
-    fg="#AAB8D0"
-)
-
-subtitle_label.pack(pady=2)
-
-
-# =====================================
-# MAIN DASHBOARD AREA
-# =====================================
+# ==========================================
+# MAIN CONTENT AREA
+# ==========================================
 
 main_area = tk.Frame(
     root,
-    bg=BACKGROUND
+    bg=BG
 )
 
-main_area.grid(row=0, column=1, sticky="nsew")
+main_area.grid(
+    row=0,
+    column=1,
+    sticky="nsew"
+)
 
-# =====================================
-# DASHBOARD HEADER
-# =====================================
+main_area.grid_columnconfigure(0, weight=1)
+main_area.grid_rowconfigure(1, weight=1)
+
+# ==========================================
+# SIDEBAR BRANDING
+# ==========================================
+
+
+
+# ==========================================
+# TOP DASHBOARD HEADER
+# ==========================================
 
 header = tk.Frame(
     main_area,
-    bg=BACKGROUND
+    bg=BG,
+    height=90
 )
 
-header.pack(fill="x", padx=35, pady=30)
+header.grid(
+    row=0,
+    column=0,
+    sticky="ew",
+    padx=30,
+    pady=(25, 10)
+)
+
+header.grid_columnconfigure(0, weight=1)
 
 
-# Welcome message
-
+# Dashboard welcome heading
 welcome_label = tk.Label(
     header,
-    text="Welcome to Smart ATM",
-    font=("Arial", 24, "bold"),
-    bg=BACKGROUND,
-    fg=TEXT
-)
-
-welcome_label.pack(anchor="w")
-
-
-# Dashboard description
-
-description_label = tk.Label(
-    header,
-    text="Manage your money securely and conveniently.",
-    font=("Arial", 11),
-    bg=BACKGROUND,
-    fg=MUTED
-)
-
-description_label.pack(anchor="w", pady=(5, 0))
-# =====================================
-# ACCOUNT BALANCE CARD
-# =====================================
-
-balance_card = tk.Frame(
-    main_area,
-    bg=BLUE,
-    height=190
-)
-
-balance_card.pack(
-    fill="x",
-    padx=35,
-    pady=20
-)
-
-balance_card.pack_propagate(False)
-
-balance_title = tk.Label(
-    balance_card,
-    text="TOTAL ACCOUNT BALANCE",
-    font=("Arial", 10, "bold"),
-    bg=BLUE,
-    fg="#DCE8FF"
-)
-
-balance_title.pack(anchor="w", padx=25, pady=(22, 5))
-
-balance_amount = tk.Label(
-    balance_card,
-    text="₦0.00",
-    font=("Arial", 30, "bold"),
-    bg=BLUE,
+    text="Dashboard Overview",
+    font=("Arial", 22, "bold"),
+    bg=BG,
     fg=WHITE
 )
 
-balance_amount.pack(anchor="w", padx=25)
+welcome_label.grid(
+    row=0,
+    column=0,
+    sticky="w"
+)
 
-account_holder = tk.Label(
-    balance_card,
-    text="ACCOUNT HOLDER: SMART ATM CUSTOMER",
+
+# Dashboard subtitle
+subtitle = tk.Label(
+    header,
+    text="Monitor your finances and banking activities",
     font=("Arial", 9),
-    bg=BLUE,
-    fg="#DCE8FF"
+    bg=BG,
+    fg=MUTED
 )
 
-account_holder.pack(anchor="w", padx=25, pady=(8, 0))
+subtitle.grid(
+    row=1,
+    column=0,
+    sticky="w",
+    pady=(5, 0)
+)
 
-# QUICK ACTIONS SECTION
 
-quick_actions_title = tk.Label(
-    main_area,
-    text="Quick Actions",
+brand = tk.Label(
+    sidebar,
+    text="◆  SMART ATM",
     font=("Arial", 17, "bold"),
-    bg=BACKGROUND,
-    fg=TEXT
+    bg=SIDEBAR,
+    fg=WHITE
 )
 
-quick_actions_title.pack(
-    anchor="w",
-    padx=35,
-    pady=(20, 10)
+brand.pack(anchor="w", padx=20, pady=(25, 30))
+
+
+# ==========================================
+# CUSTOMER PROFILE CARD
+# ==========================================
+
+profile_card = tk.Frame(
+    sidebar,
+    bg=CARD,
+    padx=12,
+    pady=15
 )
 
-# QUICK ACTIONS CONTAINER
+profile_card.pack(fill="x", padx=12)
 
-quick_actions_frame = tk.Frame(
-    main_area,
-    bg=BACKGROUND
+
+profile_name = tk.Label(
+    profile_card,
+    text="Welcome back, Customer!",
+    font=("Arial", 10, "bold"),
+    bg=CARD,
+    fg=WHITE
 )
 
-quick_actions_frame.pack(
-    fill="x",
-    padx=35,
-    pady=10
+profile_name.pack(anchor="w")
+
+
+profile_description = tk.Label(
+    profile_card,
+    text="Your banking overview",
+    font=("Arial", 8),
+    bg=CARD,
+    fg=MUTED
 )
 
-# DEPOSIT BUTTON
+profile_description.pack(anchor="w", pady=(5, 0))
 
-deposit_button = tk.Button(
-    quick_actions_frame,
-    text="＋  Deposit",
-    font=("Arial", 12, "bold"),
-    bg=BLUE,
-    fg=WHITE,
-    activebackground=NAVY,
-    activeforeground=WHITE,
-    relief="flat",
-    cursor="hand2",
-    padx=30,
-    pady=18
+
+# ==========================================
+# SIDEBAR MENU HEADING
+# ==========================================
+
+menu_heading = tk.Label(
+    sidebar,
+    text="MAIN MENU",
+    font=("Arial", 8, "bold"),
+    bg=SIDEBAR,
+    fg=MUTED
 )
 
-deposit_button.pack(side="left", padx=(0, 15))
+menu_heading.pack(anchor="w", padx=20, pady=(30, 12))
 
-# =====================================
+# ==========================================
+# SIDEBAR NAVIGATION
+# ==========================================
+
+navigation_items = [
+    ("▦", "Dashboard"),
+    ("✧", "Smart ATM Insights"),
+    ("▣", "Accounts"),
+    ("↔", "Transactions"),
+    ("▤", "Reports"),
+    ("◈", "Investments"),
+    ("▱", "Loans"),
+    ("▧", "Taxes")
+]
+
+
+def create_navigation_button(icon, title):
+
+    button = tk.Button(
+        sidebar,
+        text=f"  {icon}     {title}",
+        font=("Arial", 10),
+        bg=SIDEBAR,
+        fg=MUTED,
+        activebackground=CARD_LIGHT,
+        activeforeground=WHITE,
+        relief="flat",
+        bd=0,
+        anchor="w",
+        cursor="hand2",
+        padx=15,
+        pady=12
+    )
+
+    button.pack(fill="x", padx=10, pady=2)
+
+    return button
+
+
+for icon, title in navigation_items:
+    create_navigation_button(icon, title)
+
+# ==========================================
 # START APPLICATION
-# =====================================
+# ==========================================
 
 root.mainloop()
