@@ -62,5 +62,40 @@
                 "date": "2026-11-11 11:01:18"
             }
         ]
+    },
+    "1782380963": {
+        "name": "odeh emmanuel",
+        "phone": "09130837623",
+        "pin_salt": "c590725f0c8cf3ad6d2dbba6531d5bb5",
+        "pin_hash": "4dfddfae503c2945856c0e537f82498a1634d7dbb555460db999e8eaa146462e",
+        "balance": 0,
+        "transactions": []
+    },
+    "1822606367": {
+        "name": "zion ojonele",
+        "phone": "07087245436",
+        "pin_salt": "3fc93dd4c75080b0c614227d8de2b412",
+        "pin_hash": "5d7493f7f6586cff70471e8606b8367b9174c93c94c45ea62c4364a957e138c5",
+        "balance": 3000,
+        "transactions": [
+            {
+                "type": "Deposit",
+                "amount": 5000,
+                "date": "2026-11-12 16:45:54"
+            },
+            {
+                "type": "Withdrawal",
+                "amount": 2000,
+                "date": "2026-11-12 16:46:02"
+            }
+        ]
+    },
+    "5844040619": {
+        "name": "solomon onoja",
+        "phone": "09012716485",
+        "pin_salt": "93be6c29a52c840e6c8ef70cbdca634f",
+        "pin_hash": "a722f9e01ee6e2ef69e1469ab136f1b977a0667aa8dcbb67590797f2a36868eb",
+        "balance": 0,
+        "transactions": []
     }
 }
