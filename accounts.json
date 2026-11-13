@@ -76,7 +76,7 @@
         "phone": "07087245436",
         "pin_salt": "3fc93dd4c75080b0c614227d8de2b412",
         "pin_hash": "5d7493f7f6586cff70471e8606b8367b9174c93c94c45ea62c4364a957e138c5",
-        "balance": 3000,
+        "balance": 500.0,
         "transactions": [
             {
                 "type": "Deposit",
@@ -87,6 +87,36 @@
                 "type": "Withdrawal",
                 "amount": 2000,
                 "date": "2026-11-12 16:46:02"
+            },
+            {
+                "type": "Transfer",
+                "amount": 1000.0,
+                "bank": "OPay",
+                "beneficiary": "odeh emmanuel",
+                "beneficiary_account": "9130837623",
+                "reference": "SATM39F33AAC",
+                "date": "2026-11-13 14:56:14",
+                "status": "Simulated"
+            },
+            {
+                "type": "Transfer",
+                "amount": 1500.0,
+                "bank": "OPay",
+                "beneficiary": "onyeke benedict",
+                "beneficiary_account": "2323567888",
+                "reference": "SATMB09D2EF9",
+                "date": "2026-11-13 15:33:30",
+                "status": "Simulated"
+            },
+            {
+                "type": "Deposit",
+                "amount": 500.0,
+                "date": "2026-11-13 15:38:43"
+            },
+            {
+                "type": "Withdrawal",
+                "amount": 500.0,
+                "date": "2026-11-13 15:39:42"
             }
         ]
     },
