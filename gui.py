@@ -402,8 +402,8 @@ navigation_items = [
     ("▦", "Dashboard"),
     ("↔", "Transactions"),
     ("＋", "Deposit"),
-    ("－", "Withdraw"),
-    ("⇄", "Send Money")
+    ("⇄", "Send Money"),
+    ("💰", "Loans")
 ]
 
 
@@ -465,16 +465,17 @@ pages_container.grid_columnconfigure(0, weight=1)
 dashboard_page = tk.Frame(pages_container, bg=BG)
 transactions_page = tk.Frame(pages_container, bg=BG)
 deposit_page = tk.Frame(pages_container, bg=BG)
-withdraw_page = tk.Frame(pages_container, bg=BG)
 transfer_page = tk.Frame(pages_container, bg=BG)
+loan_page = tk.Frame(pages_container, bg=BG)
 
 
 all_pages = {
     "Dashboard": dashboard_page,
     "Transactions": transactions_page,
     "Deposit": deposit_page,
-    "Withdraw": withdraw_page,
-    "Send Money": transfer_page
+    "Send Money": transfer_page,
+    "Loans": loan_page
+
 }
 
 
@@ -1116,6 +1117,229 @@ def refresh_transaction_history():
 # DEPOSIT PAGE
 # =========================================================
 
+
+
+# =========================================================
+# LOAN PAGE
+# =========================================================
+
+page_heading(
+    loan_page,
+    "Loans",
+    "Apply for a loan and manage your repayments."
+)
+
+
+# =========================================================
+# LOAN APPLICATION CARD
+# =========================================================
+
+loan_card = tk.Frame(
+    loan_page,
+    bg=CARD,
+    padx=25,
+    pady=25,
+    highlightthickness=1,
+    highlightbackground=BORDER
+)
+
+loan_card.pack(
+    fill="x",
+    padx=30,
+    pady=(0, 20)
+)
+
+
+tk.Label(
+    loan_card,
+    text="APPLY FOR A LOAN",
+    font=("Arial", 15, "bold"),
+    bg=CARD,
+    fg=WHITE
+).pack(anchor="w", pady=(0, 8))
+
+
+tk.Label(
+    loan_card,
+    text="Choose how much you would like to borrow.",
+    font=("Arial", 9),
+    bg=CARD,
+    fg=MUTED
+).pack(anchor="w", pady=(0, 20))
+
+
+# LOAN AMOUNT
+
+tk.Label(
+    loan_card,
+    text="LOAN AMOUNT (₦)",
+    font=("Arial", 9, "bold"),
+    bg=CARD,
+    fg=TEXT
+).pack(anchor="w", pady=(0, 8))
+
+
+loan_amount_entry = tk.Entry(
+    loan_card,
+    font=("Arial", 13),
+    bg=CARD_LIGHT,
+    fg=WHITE,
+    insertbackground=WHITE,
+    relief="flat"
+)
+
+loan_amount_entry.pack(
+    fill="x",
+    ipady=12,
+    pady=(0, 20)
+)
+
+
+# =========================================================
+# LOAN CALCULATION DISPLAY
+# =========================================================
+
+loan_interest_value = tk.Label(
+    loan_card,
+    text="₦0.00",
+    font=("Arial", 12, "bold"),
+    bg=CARD,
+    fg=CYAN
+)
+
+loan_interest_value.pack(anchor="w", pady=(0, 15))
+
+
+loan_total_value = tk.Label(
+    loan_card,
+    text="₦0.00",
+    font=("Arial", 18, "bold"),
+    bg=CARD,
+    fg=SUCCESS
+)
+
+loan_total_value.pack(anchor="w", pady=(0, 20))
+
+loan_amount_entry.bind(
+    "<KeyRelease>",
+    lambda event: calculate_loan()
+)
+# LOAN INTEREST
+
+tk.Label(
+    loan_card,
+    text="INTEREST RATE",
+    font=("Arial", 9, "bold"),
+    bg=CARD,
+    fg=TEXT
+).pack(anchor="w", pady=(0, 8))
+
+
+tk.Label(
+    loan_card,
+    text="10% flat interest",
+    font=("Arial", 12, "bold"),
+    bg=CARD,
+    fg=CYAN
+).pack(anchor="w", pady=(0, 20))
+
+
+# REPAYMENT PERIOD
+
+tk.Label(
+    loan_card,
+    text="REPAYMENT PERIOD",
+    font=("Arial", 9, "bold"),
+    bg=CARD,
+    fg=TEXT
+).pack(anchor="w", pady=(0, 8))
+
+
+tk.Label(
+    loan_card,
+    text="30 days",
+    font=("Arial", 12, "bold"),
+    bg=CARD,
+    fg=CYAN
+).pack(anchor="w", pady=(0, 20))
+
+
+# =========================================================
+# CALCULATE LOAN INTEREST AND TOTAL REPAYMENT
+# =========================================================
+
+def calculate_loan():
+
+    raw_amount = loan_amount_entry.get().strip()
+
+    try:
+
+        amount = float(raw_amount)
+
+        if amount <= 0:
+            raise ValueError
+
+    except ValueError:
+
+        loan_interest_value.config(
+            text="Interest: ₦0.00"
+        )
+
+        loan_total_value.config(
+            text="Total repayment: ₦0.00"
+        )
+
+        return
+
+    interest = amount * 0.10
+
+    total_repayment = amount + interest
+
+    loan_interest_value.config(
+        text=f"Interest (10%): {money(interest)}"
+    )
+
+    loan_total_value.config(
+        text=f"Total repayment: {money(total_repayment)}"
+    )
+
+
+# TERMS AND CONDITIONS
+
+loan_terms_accepted = tk.BooleanVar(value=False)
+
+
+loan_terms_checkbox = tk.Checkbutton(
+    loan_card,
+    text="I have read and agree to the loan terms and conditions.",
+    variable=loan_terms_accepted,
+    font=("Arial", 9),
+    bg=CARD,
+    fg=TEXT,
+    activebackground=CARD,
+    activeforeground=WHITE,
+    selectcolor=CARD_LIGHT,
+    cursor="hand2"
+)
+
+loan_terms_checkbox.pack(anchor="w", pady=(5, 10))
+
+
+tk.Label(
+    loan_card,
+    text=(
+        "Important: This is a banking simulation. "
+        "Loan applications undergo a minimum 3-minute "
+        "simulated review before any approved amount is credited."
+    ),
+    font=("Arial", 8),
+    bg=CARD,
+    fg=MUTED,
+    wraplength=700,
+    justify="left"
+).pack(anchor="w", pady=(5, 0))
+
+
 page_heading(
     deposit_page,
     "Deposit Money",
@@ -1237,146 +1461,6 @@ tk.Button(
     bd=0,
     cursor="hand2",
     command=handle_deposit
-).pack(fill="x", ipady=11)
-
-
-# =========================================================
-# WITHDRAW PAGE
-# =========================================================
-
-page_heading(
-    withdraw_page,
-    "Withdraw Money",
-    "Withdraw money from your Smart ATM simulation account."
-)
-
-
-withdraw_card = tk.Frame(
-    withdraw_page,
-    bg=CARD,
-    padx=25,
-    pady=25
-)
-
-withdraw_card.pack(fill="x", padx=30)
-
-
-tk.Label(
-    withdraw_card,
-    text="AMOUNT (₦)",
-    font=("Arial", 9, "bold"),
-    bg=CARD,
-    fg=TEXT
-).pack(anchor="w", pady=(0, 8))
-
-
-withdraw_amount_entry = tk.Entry(
-    withdraw_card,
-    font=("Arial", 13),
-    bg=CARD_LIGHT,
-    fg=WHITE,
-    insertbackground=WHITE,
-    relief="flat"
-)
-
-withdraw_amount_entry.pack(
-    fill="x",
-    ipady=12,
-    pady=(0, 15)
-)
-
-
-withdraw_message = tk.Label(
-    withdraw_card,
-    text="",
-    font=("Arial", 9),
-    bg=CARD,
-    fg=MUTED
-)
-
-withdraw_message.pack(anchor="w", pady=(0, 10))
-
-
-def handle_withdrawal():
-
-    raw_amount = withdraw_amount_entry.get().strip()
-
-    try:
-
-        amount = float(raw_amount)
-
-        if amount <= 0:
-            raise ValueError
-
-    except ValueError:
-
-        withdraw_message.config(
-            text="Enter a valid amount greater than zero.",
-            fg=ERROR
-        )
-
-        return
-
-
-    accounts = main.load_accounts()
-
-    account = accounts.get(current_account_number)
-
-    if not account:
-
-        withdraw_message.config(
-            text="Account could not be found.",
-            fg=ERROR
-        )
-
-        return
-
-
-    balance = float(account.get("balance", 0))
-
-    if amount > balance:
-
-        withdraw_message.config(
-            text="Insufficient balance.",
-            fg=ERROR
-        )
-
-        return
-
-
-    account["balance"] = balance - amount
-
-    account.setdefault("transactions", []).append({
-        "type": "Withdrawal",
-        "amount": amount,
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
-
-
-    if save_updated_accounts(accounts):
-
-        withdraw_amount_entry.delete(0, tk.END)
-
-        withdraw_message.config(
-            text=f"Withdrawal recorded: {money(amount)}",
-            fg=SUCCESS
-        )
-
-        refresh_dashboard()
-        refresh_transaction_history()
-
-
-tk.Button(
-    withdraw_card,
-    text="WITHDRAW",
-    font=("Arial", 10, "bold"),
-    bg=BLUE,
-    fg=WHITE,
-    activebackground=PURPLE,
-    relief="flat",
-    bd=0,
-    cursor="hand2",
-    command=handle_withdrawal
 ).pack(fill="x", ipady=11)
 
 
