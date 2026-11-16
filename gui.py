@@ -48,6 +48,7 @@ current_account_number = None
 balance_visible = True
 
 
+
 def get_current_account():
 
     if current_account_number is None:
@@ -55,11 +56,30 @@ def get_current_account():
 
     accounts = main.load_accounts()
 
-    return accounts.get(current_account_number)
+    account = accounts.get(current_account_number)
+
+    if account is not None and "loans" not in account:
+        account["loans"] = []
+        save_updated_accounts(accounts)
+
+    return account
 
 
 def money(value):
     return f"₦{value:,.2f}"
+
+
+def has_pending_or_unpaid_loan(account):
+
+    if account is None:
+        return False
+
+    for loan in account.get("loans", []):
+
+        if loan.get("status") in ("pending", "active"):
+            return True
+
+    return False
 
 
 def save_updated_accounts(accounts):
@@ -75,6 +95,37 @@ def save_updated_accounts(accounts):
 
     return True
 
+def apply_for_loan():
+    account = get_current_account()
+
+    if account is None:
+        messagebox.showerror(
+            "Error",
+            "Please log in before applying for a loan."
+        )
+        return
+
+    if has_pending_or_unpaid_loan(account):
+        messagebox.showwarning(
+            "Loan Unavailable",
+            "You already have a pending application or an unpaid loan."
+        )
+        return
+    
+    raw_amount = loan_amount_entry.get().strip()
+
+    try:
+        amount = int(raw_amount)
+
+        if amount <= 0:
+            raise ValueError
+
+    except ValueError:
+        messagebox.showerror(
+            "Invalid Amount",
+            "Please enter a valid positive loan amount."
+        )
+        return
 
 # =========================================================
 # ROOT SCREEN CONTAINERS
@@ -1322,6 +1373,25 @@ loan_terms_checkbox = tk.Checkbutton(
     cursor="hand2"
 )
 
+apply_loan_button = tk.Button(
+    loan_card,
+    text="Apply for Loan",
+    font=("Arial", 11, "bold"),
+    bg=BLUE,
+    fg=WHITE,
+    activebackground=BLUE,
+    activeforeground=WHITE,
+    relief="flat",
+    cursor="hand2",
+    command=apply_for_loan
+)
+
+apply_loan_button.pack(
+    fill="x",
+    ipady=12,
+    pady=(10, 0)
+)
+
 loan_terms_checkbox.pack(anchor="w", pady=(5, 10))
 
 
@@ -1974,7 +2044,8 @@ def handle_registration():
         "pin_salt": salt,
         "pin_hash": hashed,
         "balance": 0,
-        "transactions": []
+        "transactions": [],
+        "loans": []
     }
 
 
