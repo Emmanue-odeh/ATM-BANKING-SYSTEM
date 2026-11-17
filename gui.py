@@ -1,7 +1,7 @@
 
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
-from datetime import datetime
+from datetime import datetime, timedelta
 import secrets
 
 import main
@@ -126,6 +126,136 @@ def apply_for_loan():
             "Please enter a valid positive loan amount."
         )
         return
+
+    if not loan_terms_accepted.get():
+        messagebox.showwarning(
+            "Terms Required",
+            "Please accept the loan terms and conditions before applying."
+        )
+        return
+
+    interest = amount * 0.10
+    total_repayment = amount + interest
+
+    confirm = messagebox.askyesno(
+        "Confirm Loan Application",
+        f"Loan Amount: {money(amount)}\n"
+        f"Interest (10%): {money(interest)}\n"
+        f"Total Repayment: {money(total_repayment)}\n\n"
+        "Repayment Period: 30 days\n"
+        "Review Time: 3 minutes\n\n"
+        "Do you want to proceed with this application?"
+    )
+
+    if not confirm:
+        return
+
+    entered_pin = simpledialog.askstring(
+        "PIN Verification",
+        "Enter your 4-digit account PIN:",
+        show="*"
+    )
+
+    if entered_pin is None:
+        return
+
+    if not main.verify_pin(account, entered_pin):
+        messagebox.showerror(
+            "Incorrect PIN",
+            "The PIN you entered is incorrect."
+        )
+        return
+    accounts = main.load_accounts()
+    account = accounts.get(current_account_number)
+
+    if account is None:
+        messagebox.showerror(
+            "Error",
+            "Account could not be found."
+        )
+        return
+
+    application_time = datetime.now()
+
+    loan_application = {
+        "application_id": secrets.token_hex(8).upper(),
+        "principal": amount,
+        "interest": interest,
+        "total_due": total_repayment,
+        "amount_repaid": 0,
+        "outstanding_balance": total_repayment,
+        "status": "pending",
+        "applied_at": application_time.isoformat(),
+        "review_until": (
+            application_time + timedelta(minutes=3)
+        ).isoformat()
+    }
+
+    account.setdefault("loans", []).append(loan_application)
+
+    if save_updated_accounts(accounts):
+        messagebox.showinfo(
+            "Application Submitted",
+            "Your loan application has been submitted successfully.\n\n"
+            "Your application is now under review.\n"
+            "Please wait 3 minutes for the review process."
+        )
+
+def process_pending_loan_reviews():
+
+    accounts = main.load_accounts()
+    current_time = datetime.now()
+    changes_made = False
+
+    for account in accounts.values():
+
+        for loan in account.get("loans", []):
+
+            if loan.get("status") != "pending":
+                continue
+
+            review_until = loan.get("review_until")
+
+            if not review_until:
+                continue
+
+            try:
+                review_deadline = datetime.fromisoformat(review_until)
+            except (TypeError, ValueError):
+                continue
+
+            if current_time >= review_deadline:
+
+                loan["status"] = "active"
+
+                loan["approved_at"] = current_time.isoformat()
+
+                loan["repayment_due_at"] = (
+                    current_time + timedelta(days=30)
+                ).isoformat()
+
+                account["balance"] += loan["principal"]
+
+                account.setdefault("transactions", []).append({
+                    "type": "Loan Credit",
+                    "amount": loan["principal"],
+                    "date": current_time.strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    ),
+                    "application_id": loan["application_id"],
+                    "status": "Simulated"
+                })
+
+                changes_made = True
+
+    if changes_made:
+        save_updated_accounts(accounts)
+
+def check_loan_reviews():
+
+    process_pending_loan_reviews()
+
+    root.after(1000, check_loan_reviews)
 
 # =========================================================
 # ROOT SCREEN CONTAINERS
@@ -519,6 +649,59 @@ deposit_page = tk.Frame(pages_container, bg=BG)
 transfer_page = tk.Frame(pages_container, bg=BG)
 loan_page = tk.Frame(pages_container, bg=BG)
 
+loan_canvas = tk.Canvas(
+    loan_page,
+    bg=BG,
+    highlightthickness=0
+)
+
+loan_scrollbar = ttk.Scrollbar(
+    loan_page,
+    orient="vertical",
+    command=loan_canvas.yview
+)
+
+loan_canvas.configure(
+    yscrollcommand=loan_scrollbar.set
+)
+
+loan_scrollbar.pack(
+    side="right",
+    fill="y"
+)
+
+loan_canvas.pack(
+    side="left",
+    fill="both",
+    expand=True
+)
+
+loan_content = tk.Frame(
+    loan_canvas,
+    bg=BG
+)
+
+loan_window = loan_canvas.create_window(
+    (0, 0),
+    window=loan_content,
+    anchor="nw"
+)
+
+loan_content.bind(
+    "<Configure>",
+    lambda event: loan_canvas.configure(
+        scrollregion=loan_canvas.bbox("all")
+    )
+)
+
+loan_canvas.bind(
+    "<Configure>",
+    lambda event: loan_canvas.itemconfigure(
+        loan_window,
+        width=event.width
+    )
+)
+
 
 all_pages = {
     "Dashboard": dashboard_page,
@@ -526,8 +709,8 @@ all_pages = {
     "Deposit": deposit_page,
     "Send Money": transfer_page,
     "Loans": loan_page
-
 }
+
 
 
 def show_page(page_name):
@@ -552,6 +735,9 @@ def show_page(page_name):
 
         refresh_transaction_history()
 
+    elif page_name == "Loans":
+
+        refresh_loan_details()
 
 # =========================================================
 # PAGE HEADING FUNCTION
@@ -1175,7 +1361,7 @@ def refresh_transaction_history():
 # =========================================================
 
 page_heading(
-    loan_page,
+    loan_content,
     "Loans",
     "Apply for a loan and manage your repayments."
 )
@@ -1185,8 +1371,9 @@ page_heading(
 # LOAN APPLICATION CARD
 # =========================================================
 
+
 loan_card = tk.Frame(
-    loan_page,
+    loan_content,
     bg=CARD,
     padx=25,
     pady=25,
@@ -1244,7 +1431,6 @@ loan_amount_entry.pack(
     ipady=12,
     pady=(0, 20)
 )
-
 
 # =========================================================
 # LOAN CALCULATION DISPLAY
@@ -1394,6 +1580,225 @@ apply_loan_button.pack(
 
 loan_terms_checkbox.pack(anchor="w", pady=(5, 10))
 
+# =========================================================
+# MY LOAN DETAILS CARD
+# =========================================================
+
+loan_details_card = tk.Frame(
+    loan_content,
+    bg=CARD,
+    padx=25,
+    pady=25,
+    highlightthickness=1,
+    highlightbackground=BORDER
+)
+
+loan_details_card.pack(
+    fill="x",
+    padx=30,
+    pady=(0, 20)
+)
+
+
+tk.Label(
+    loan_details_card,
+    text="MY LOAN DETAILS",
+    font=("Arial", 15, "bold"),
+    bg=CARD,
+    fg=WHITE
+).pack(anchor="w", pady=(0, 8))
+
+
+tk.Label(
+    loan_details_card,
+    text="View your current loan application and repayment information.",
+    font=("Arial", 9),
+    bg=CARD,
+    fg=MUTED
+).pack(anchor="w", pady=(0, 20))
+
+# LOAN STATUS
+
+loan_status_value = tk.Label(
+    loan_details_card,
+    text="No loan application yet",
+    font=("Arial", 12, "bold"),
+    bg=CARD,
+    fg=CYAN
+)
+
+loan_status_value.pack(
+    anchor="w",
+    pady=(0, 20)
+)
+
+# LOAN FINANCIAL DETAILS
+
+loan_principal_value = tk.Label(
+    loan_details_card,
+    text="Loan Principal: ₦0.00",
+    font=("Arial", 11),
+    bg=CARD,
+    fg=WHITE
+)
+loan_principal_value.pack(anchor="w", pady=8)
+
+
+loan_interest_detail_value = tk.Label(
+    loan_details_card,
+    text="Interest: ₦0.00",
+    font=("Arial", 11),
+    bg=CARD,
+    fg=WHITE
+)
+loan_interest_detail_value.pack(anchor="w", pady=8)
+
+
+loan_total_detail_value = tk.Label(
+    loan_details_card,
+    text="Total Repayment: ₦0.00",
+    font=("Arial", 11, "bold"),
+    bg=CARD,
+    fg=CYAN
+)
+loan_total_detail_value.pack(anchor="w", pady=8)
+
+
+loan_repaid_value = tk.Label(
+    loan_details_card,
+    text="Amount Repaid: ₦0.00",
+    font=("Arial", 11),
+    bg=CARD,
+    fg=WHITE
+)
+loan_repaid_value.pack(anchor="w", pady=8)
+
+
+loan_outstanding_value = tk.Label(
+    loan_details_card,
+    text="Outstanding Balance: ₦0.00",
+    font=("Arial", 12, "bold"),
+    bg=CARD,
+    fg=SUCCESS
+)
+loan_outstanding_value.pack(anchor="w", pady=8)
+
+# LOAN REPAYMENT
+
+tk.Label(
+    loan_details_card,
+    text="MAKE A REPAYMENT",
+    font=("Arial", 13, "bold"),
+    bg=CARD,
+    fg=WHITE
+).pack(anchor="w", pady=(25, 12))
+
+
+loan_repayment_entry = tk.Entry(
+    loan_details_card,
+    font=("Arial", 12),
+    bg=CARD_LIGHT,
+    fg=WHITE,
+    insertbackground=WHITE,
+    relief="flat"
+)
+
+loan_repayment_entry.pack(
+    fill="x",
+    ipady=12,
+    pady=(0, 15)
+)
+
+loan_repayment_entry.insert(
+    0,
+    "Enter repayment amount"
+)
+
+repay_loan_button = tk.Button(
+    loan_details_card,
+    text="Repay Loan",
+    font=("Arial", 11, "bold"),
+    bg=BLUE,
+    fg=WHITE,
+    activebackground=BLUE,
+    activeforeground=WHITE,
+    relief="flat",
+    cursor="hand2"
+)
+
+repay_loan_button.pack(
+    fill="x",
+    ipady=12,
+    pady=(5, 10)
+)
+
+
+# =========================================================
+# REFRESH LOAN DETAILS
+# =========================================================
+
+def refresh_loan_details():
+
+    account = get_current_account()
+
+    if account is None:
+        return
+
+    loans = account.get("loans", [])
+
+    if not loans:
+
+        loan_status_value.config(
+            text="No loan application yet"
+        )
+
+        loan_principal_value.config(
+            text="Loan Principal: ₦0.00"
+        )
+
+        loan_interest_detail_value.config(
+            text="Interest: ₦0.00"
+        )
+
+        loan_total_detail_value.config(
+            text="Total Repayment: ₦0.00"
+        )
+
+        loan_repaid_value.config(
+            text="Amount Repaid: ₦0.00"
+        )
+
+        loan_outstanding_value.config(
+            text="Outstanding Balance: ₦0.00"
+        )
+
+        return
+
+    loan = loans[-1]
+
+    loan_status_value.config(
+        text=f"Loan Status: {loan['status'].capitalize()}"
+    )
+
+    loan_principal_value.config(
+        text=f"Loan Principal: {money(loan['principal'])}"
+    )
+
+    loan_interest_detail_value.config(
+        text=f"Interest: {money(loan['interest'])}"
+    )
+
+    loan_total_detail_value.config(
+        text=f"Total Repayment: {money(loan['total_due'])}"
+    )
+
+    loan_repaid_value.config(
+        text=f"Amount Repaid: {money(loan['amount_repaid'])}"
+    )
+
+    loan_outstanding_value.config(
+        text=f"Outstanding Balance: {money(loan['outstanding_balance'])}"
+    )
 
 tk.Label(
     loan_card,
@@ -2222,5 +2627,7 @@ for page_name, button in navigation_buttons.items():
 # =========================================================
 
 show_login()
+
+check_loan_reviews()
 
 root.mainloop()
