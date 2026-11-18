@@ -1710,6 +1710,7 @@ loan_repayment_entry.pack(
 )
 
 
+
 def repay_loan():
 
     # Get the repayment amount.
@@ -1756,10 +1757,9 @@ def repay_loan():
         )
         return
 
-    # Get the latest outstanding balance.
+    # Check the outstanding loan balance.
     outstanding = active_loan["outstanding_balance"]
 
-    # Prevent repayment above the outstanding balance.
     if amount > outstanding:
         messagebox.showerror(
             "Invalid Repayment",
@@ -1767,7 +1767,7 @@ def repay_loan():
         )
         return
 
-    # Check the customer's available balance.
+    # Check the available account balance.
     if amount > account["balance"]:
         messagebox.showerror(
             "Insufficient Balance",
@@ -1777,16 +1777,34 @@ def repay_loan():
         )
         return
 
-    # Deduct the repayment from the account.
+    # Verify the customer's PIN.
+    entered_pin = simpledialog.askstring(
+        "PIN Verification",
+        "Enter your 4-digit account PIN:",
+        show="*"
+    )
+
+    if entered_pin is None:
+        return
+
+    if not main.verify_pin(account, entered_pin):
+        messagebox.showerror(
+            "Incorrect PIN",
+            "The PIN you entered is incorrect."
+        )
+        return
+
+    # Deduct money from the customer's account.
     account["balance"] = round(
         account["balance"] - amount, 2
     )
 
-    # Update the loan repayment information.
+    # Update the amount already repaid.
     active_loan["amount_repaid"] = round(
         active_loan["amount_repaid"] + amount, 2
     )
 
+    # Reduce the outstanding loan balance.
     active_loan["outstanding_balance"] = round(
         outstanding - amount, 2
     )
@@ -1814,6 +1832,7 @@ def repay_loan():
 
         refresh_loan_details()
         refresh_dashboard()
+        refresh_transaction_history()
 
         messagebox.showinfo(
             "Repayment Successful",
