@@ -1709,10 +1709,120 @@ loan_repayment_entry.pack(
     pady=(0, 15)
 )
 
-loan_repayment_entry.insert(
-    0,
-    "Enter repayment amount"
-)
+
+def repay_loan():
+
+    # Get the repayment amount.
+    raw_amount = loan_repayment_entry.get().strip()
+
+    try:
+        amount = round(float(raw_amount), 2)
+
+        if amount <= 0:
+            raise ValueError
+
+    except ValueError:
+        messagebox.showerror(
+            "Invalid Amount",
+            "Please enter a valid positive repayment amount."
+        )
+        return
+
+    # Load the latest account information.
+    accounts = main.load_accounts()
+
+    account = accounts.get(current_account_number)
+
+    if account is None:
+        messagebox.showerror(
+            "Error",
+            "Account could not be found."
+        )
+        return
+
+    # Find the customer's active loan.
+    active_loan = None
+
+    for loan in account.get("loans", []):
+
+        if loan.get("status") == "active":
+            active_loan = loan
+            break
+
+    if active_loan is None:
+        messagebox.showwarning(
+            "No Active Loan",
+            "You currently have no active loan to repay."
+        )
+        return
+
+    # Get the latest outstanding balance.
+    outstanding = active_loan["outstanding_balance"]
+
+    # Prevent repayment above the outstanding balance.
+    if amount > outstanding:
+        messagebox.showerror(
+            "Invalid Repayment",
+            f"You cannot repay more than your outstanding balance of {money(outstanding)}."
+        )
+        return
+
+    # Check the customer's available balance.
+    if amount > account["balance"]:
+        messagebox.showerror(
+            "Insufficient Balance",
+            f"You do not have enough money in your account.\n\n"
+            f"Available Balance: {money(account['balance'])}\n"
+            f"Repayment Amount: {money(amount)}"
+        )
+        return
+
+    # Deduct the repayment from the account.
+    account["balance"] = round(
+        account["balance"] - amount, 2
+    )
+
+    # Update the loan repayment information.
+    active_loan["amount_repaid"] = round(
+        active_loan["amount_repaid"] + amount, 2
+    )
+
+    active_loan["outstanding_balance"] = round(
+        outstanding - amount, 2
+    )
+
+    # Mark the loan as paid when nothing remains.
+    if active_loan["outstanding_balance"] <= 0:
+        active_loan["outstanding_balance"] = 0
+        active_loan["status"] = "paid"
+
+    # Record the repayment in transaction history.
+    account.setdefault("transactions", []).append({
+        "type": "Loan Repayment",
+        "amount": amount,
+        "date": datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
+        "application_id": active_loan["application_id"],
+        "status": "Simulated"
+    })
+
+    # Save all changes.
+    if save_updated_accounts(accounts):
+
+        loan_repayment_entry.delete(0, tk.END)
+
+        refresh_loan_details()
+        refresh_dashboard()
+
+        messagebox.showinfo(
+            "Repayment Successful",
+            f"Your repayment of {money(amount)} was successful.\n\n"
+            f"Remaining Loan Balance: "
+            f"{money(active_loan['outstanding_balance'])}\n\n"
+            f"Loan Status: {active_loan['status'].capitalize()}"
+        )
+
 
 repay_loan_button = tk.Button(
     loan_details_card,
@@ -1723,7 +1833,8 @@ repay_loan_button = tk.Button(
     activebackground=BLUE,
     activeforeground=WHITE,
     relief="flat",
-    cursor="hand2"
+    cursor="hand2",
+    command=repay_loan
 )
 
 repay_loan_button.pack(
@@ -1799,6 +1910,7 @@ def refresh_loan_details():
     loan_outstanding_value.config(
         text=f"Outstanding Balance: {money(loan['outstanding_balance'])}"
     )
+
 
 tk.Label(
     loan_card,
