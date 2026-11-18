@@ -248,8 +248,14 @@ def process_pending_loan_reviews():
 
                 changes_made = True
 
-    if changes_made:
-        save_updated_accounts(accounts)
+    if changes_made and save_updated_accounts(accounts):
+
+        if current_account_number is not None:
+
+          refresh_loan_details()
+          refresh_dashboard()
+          refresh_transaction_history()
+
 
 def check_loan_reviews():
 
@@ -1059,7 +1065,12 @@ def create_transaction_row(parent, item):
         amount_text = f"+{money(amount)}"
         amount_color = SUCCESS
 
-    elif transaction_type.lower() in ("withdrawal", "transfer"):
+    elif transaction_type.lower() in (
+        "withdrawal",                
+        "transfer",
+        "loan repayment"
+         
+    ):
 
         amount_text = f"-{money(amount)}"
         amount_color = ERROR

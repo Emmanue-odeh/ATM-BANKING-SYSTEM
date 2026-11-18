@@ -100,7 +100,7 @@
         "phone": "07087245436",
         "pin_salt": "3fc93dd4c75080b0c614227d8de2b412",
         "pin_hash": "5d7493f7f6586cff70471e8606b8367b9174c93c94c45ea62c4364a957e138c5",
-        "balance": 45056.0,
+        "balance": 44500.0,
         "transactions": [
             {
                 "type": "Deposit",
@@ -191,6 +191,13 @@
                 "date": "2026-11-18 15:59:18",
                 "application_id": "13338D95FE339AE2",
                 "status": "Simulated"
+            },
+            {
+                "type": "Loan Repayment",
+                "amount": 556.0,
+                "date": "2026-11-18 16:04:29",
+                "application_id": "13338D95FE339AE2",
+                "status": "Simulated"
             }
         ],
         "loans": [
@@ -199,9 +206,9 @@
                 "principal": 50000,
                 "interest": 5000.0,
                 "total_due": 55000.0,
-                "amount_repaid": 54444.0,
-                "outstanding_balance": 556.0,
-                "status": "active",
+                "amount_repaid": 55000.0,
+                "outstanding_balance": 0,
+                "status": "paid",
                 "applied_at": "2026-11-17T13:35:09.913989",
                 "review_until": "2026-11-17T13:38:09.913989",
                 "approved_at": "2026-11-17T13:43:28.744779",
