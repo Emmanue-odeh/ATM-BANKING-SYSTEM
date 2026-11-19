@@ -590,6 +590,7 @@ navigation_items = [
     ("↔", "Transactions"),
     ("＋", "Deposit"),
     ("⇄", "Send Money"),
+    ("↔", "Smart ATM Transfer"),
     ("💰", "Loans")
 ]
 
@@ -653,7 +654,9 @@ dashboard_page = tk.Frame(pages_container, bg=BG)
 transactions_page = tk.Frame(pages_container, bg=BG)
 deposit_page = tk.Frame(pages_container, bg=BG)
 transfer_page = tk.Frame(pages_container, bg=BG)
+smart_transfer_page = tk.Frame(pages_container, bg=BG)
 loan_page = tk.Frame(pages_container, bg=BG)
+
 
 loan_canvas = tk.Canvas(
     loan_page,
@@ -714,6 +717,7 @@ all_pages = {
     "Transactions": transactions_page,
     "Deposit": deposit_page,
     "Send Money": transfer_page,
+    "Smart ATM Transfer": smart_transfer_page,
     "Loans": loan_page
 }
 
@@ -2416,6 +2420,193 @@ tk.Button(
     cursor="hand2",
     command=handle_transfer
 ).pack(fill="x", ipady=11)
+
+
+# =========================================================
+# SMART ATM INTERNAL TRANSFER PAGE
+# =========================================================
+
+page_heading(
+    smart_transfer_page,
+    "Smart ATM Transfer",
+    "Send money instantly to another registered Smart ATM user."
+)
+
+
+smart_transfer_card = tk.Frame(
+    smart_transfer_page,
+    bg=CARD,
+    padx=25,
+    pady=25
+)
+
+smart_transfer_card.pack(
+    fill="x",
+    padx=30
+)
+
+
+tk.Label(
+    smart_transfer_card,
+    text="RECIPIENT ACCOUNT NUMBER",
+    font=("Arial", 9, "bold"),
+    bg=CARD,
+    fg=TEXT
+).pack(anchor="w", pady=(0, 8))
+
+
+smart_recipient_entry = tk.Entry(
+    smart_transfer_card,
+    font=("Arial", 12),
+    bg=CARD_LIGHT,
+    fg=WHITE,
+    insertbackground=WHITE,
+    relief="flat"
+)
+
+smart_recipient_entry.pack(
+    fill="x",
+    ipady=12,
+    pady=(0, 15)
+)
+
+smart_recipient_message = tk.Label(
+    smart_transfer_card,
+    text="",
+    font=("Arial", 9),
+    bg=CARD,
+    fg=MUTED
+)
+
+smart_recipient_message.pack(
+    anchor="w",
+    pady=(0, 12)
+)
+
+
+# =========================================================
+# SMART ATM INTERNAL TRANSFER PAGE
+# =========================================================
+
+def verify_smart_recipient():
+
+    recipient_number = smart_recipient_entry.get().strip()
+
+    if not recipient_number:
+        smart_recipient_message.config(
+            text="Please enter the recipient's account number.",
+            fg=ERROR
+        )
+        return
+
+    if recipient_number == current_account_number:
+        smart_recipient_message.config(
+            text="You cannot transfer money to your own account.",
+            fg=ERROR
+        )
+        return
+
+    accounts = main.load_accounts()
+
+    recipient = accounts.get(recipient_number)
+
+    if recipient is None:
+        smart_recipient_message.config(
+            text="Account not found. This user is not registered with Smart ATM.",
+            fg=ERROR
+        )
+        return
+
+    smart_recipient_message.config(
+        text=f"Verified successfully! Recipient: {recipient['name']}",
+        fg=SUCCESS
+    )
+
+
+
+def process_smart_transfer():
+
+    # Get the sender's account number.
+    sender_number = current_account_number
+
+    # Load all registered Smart ATM accounts.
+    accounts = main.load_accounts()
+
+    # Get the recipient's account number.
+    recipient_number = smart_recipient_entry.get().strip()
+
+    # Check whether the recipient account exists.
+    recipient = accounts.get(recipient_number)
+
+    if recipient is None:
+        messagebox.showerror(
+            "Account Not Found",
+            "This account is not registered with Smart ATM."
+        )
+        return
+
+    
+tk.Button(
+    smart_transfer_card,
+    text="VERIFY ACCOUNT",
+    font=("Arial", 10, "bold"),
+    bg=BLUE,
+    fg=WHITE,
+    activebackground=PURPLE,
+    relief="flat",
+    bd=0,
+    cursor="hand2",
+    command=verify_smart_recipient
+).pack(
+    fill="x",
+    ipady=11
+)
+
+tk.Label(
+    smart_transfer_card,
+    text="TRANSFER AMOUNT (₦)",
+    font=("Arial", 9, "bold"),
+    bg=CARD,
+    fg=TEXT
+).pack(
+    anchor="w",
+    pady=(20, 8)
+)
+
+
+smart_transfer_amount_entry = tk.Entry(
+    smart_transfer_card,
+    font=("Arial", 12),
+    bg=CARD_LIGHT,
+    fg=WHITE,
+    insertbackground=WHITE,
+    relief="flat"
+)
+
+smart_transfer_amount_entry.pack(
+    fill="x",
+    ipady=12
+)
+
+tk.Button(
+    smart_transfer_card,
+    text="TRANSFER MONEY",
+    font=("Arial", 10, "bold"),
+    bg=BLUE,
+    fg=WHITE,
+    activebackground=PURPLE,
+    relief="flat",
+    bd=0,
+    cursor="hand2",
+    command=lambda: messagebox.showinfo(
+        "Smart ATM Transfer",
+        "Transfer processing will be connected shortly."
+    )
+).pack(
+    fill="x",
+    ipady=13,
+    pady=(20, 0)
+)
 
 
 # =========================================================
