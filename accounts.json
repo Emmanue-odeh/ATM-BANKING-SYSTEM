@@ -92,15 +92,33 @@
         "phone": "09130837623",
         "pin_salt": "c590725f0c8cf3ad6d2dbba6531d5bb5",
         "pin_hash": "4dfddfae503c2945856c0e537f82498a1634d7dbb555460db999e8eaa146462e",
-        "balance": 0,
-        "transactions": []
+        "balance": 1000.0,
+        "transactions": [
+            {
+                "type": "Transfer Received",
+                "amount": 2000.0,
+                "date": "2026-11-19 14:24:53",
+                "reference": "A49746B61A03F970",
+                "sender": "1822606367",
+                "status": "Completed"
+            },
+            {
+                "type": "Transfer",
+                "amount": 1000.0,
+                "date": "2026-11-19 14:26:46",
+                "reference": "C81F128D8F1D4F2C",
+                "recipient": "1822606367",
+                "status": "Completed"
+            }
+        ],
+        "loans": []
     },
     "1822606367": {
         "name": "zion ojonele",
         "phone": "07087245436",
         "pin_salt": "3fc93dd4c75080b0c614227d8de2b412",
         "pin_hash": "5d7493f7f6586cff70471e8606b8367b9174c93c94c45ea62c4364a957e138c5",
-        "balance": 44500.0,
+        "balance": 5043500.0,
         "transactions": [
             {
                 "type": "Deposit",
@@ -198,6 +216,29 @@
                 "date": "2026-11-18 16:04:29",
                 "application_id": "13338D95FE339AE2",
                 "status": "Simulated"
+            },
+            {
+                "type": "Transfer",
+                "amount": 2000.0,
+                "date": "2026-11-19 14:24:53",
+                "reference": "A49746B61A03F970",
+                "recipient": "1782380963",
+                "status": "Completed"
+            },
+            {
+                "type": "Transfer Received",
+                "amount": 1000.0,
+                "date": "2026-11-19 14:26:46",
+                "reference": "C81F128D8F1D4F2C",
+                "sender": "1782380963",
+                "status": "Completed"
+            },
+            {
+                "type": "Loan Credit",
+                "amount": 5000000,
+                "date": "2026-11-19 14:37:57",
+                "application_id": "39790C76EBDBB9BD",
+                "status": "Simulated"
             }
         ],
         "loans": [
@@ -213,6 +254,19 @@
                 "review_until": "2026-11-17T13:38:09.913989",
                 "approved_at": "2026-11-17T13:43:28.744779",
                 "repayment_due_at": "2026-12-17T13:43:28.744779"
+            },
+            {
+                "application_id": "39790C76EBDBB9BD",
+                "principal": 5000000,
+                "interest": 500000.0,
+                "total_due": 5500000.0,
+                "amount_repaid": 0,
+                "outstanding_balance": 5500000.0,
+                "status": "active",
+                "applied_at": "2026-11-19T14:34:57.203840",
+                "review_until": "2026-11-19T14:37:57.203840",
+                "approved_at": "2026-11-19T14:37:57.803095",
+                "repayment_due_at": "2026-12-19T14:37:57.803095"
             }
         ]
     },

@@ -2544,6 +2544,127 @@ def process_smart_transfer():
             "This account is not registered with Smart ATM."
         )
         return
+    # Prevent users from transferring to themselves.
+    if sender_number == recipient_number:
+        messagebox.showerror(
+            "Invalid Transfer",
+            "You cannot transfer money to your own account."
+        )
+        return
+
+    # Get the transfer amount.
+    raw_amount = smart_transfer_amount_entry.get().strip()
+
+    try:
+        amount = round(float(raw_amount), 2)
+
+        if amount <= 0:
+            raise ValueError
+
+    except ValueError:
+        messagebox.showerror(
+            "Invalid Amount",
+            "Please enter a valid amount greater than zero."
+        )
+        return
+
+        # Get the sender's account details.
+    sender = accounts.get(sender_number)
+
+    if sender is None:
+        messagebox.showerror(
+            "Account Error",
+            "Your account could not be found. Please log in again."
+        )
+        return
+
+    # Check whether the sender has enough money.
+    if amount > sender["balance"]:
+        messagebox.showerror(
+            "Insufficient Balance",
+            "You do not have enough money in your account."
+        )
+        return
+
+        # Display the transfer details for confirmation.
+    confirm = messagebox.askyesno(
+        "Confirm Smart ATM Transfer",
+        f"Recipient: {recipient['name']}\n"
+        f"Account Number: {recipient_number}\n"
+        f"Amount: ₦{amount:,.2f}\n\n"
+        "Do you want to continue with this transfer?"
+    )
+
+    if not confirm:
+        return
+
+        # Ask the sender to enter their PIN.
+    pin = simpledialog.askstring(
+        "Security Verification",
+        "Enter your Smart ATM PIN:",
+        show="*"
+    )
+
+    if pin is None:
+        return
+
+    # Verify the entered PIN.
+    if not main.verify_pin(sender, pin):
+        messagebox.showerror(
+            "Security Error",
+            "Incorrect PIN. Transfer cancelled."
+        )
+        return
+
+        # Generate a unique transfer reference.
+    reference = secrets.token_hex(8).upper()
+
+    # Record the transfer date and time.
+    transfer_date = datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+
+    # Deduct money from the sender.
+    sender["balance"] -= amount
+
+    # Add money to the recipient.
+    recipient["balance"] += amount
+
+    # Record the outgoing transfer.
+    sender.setdefault("transactions", []).append({
+        "type": "Transfer",
+        "amount": amount,
+        "date": transfer_date,
+        "reference": reference,
+        "recipient": recipient_number,
+        "status": "Completed"
+    })
+
+    # Record the incoming transfer.
+    recipient.setdefault("transactions", []).append({
+        "type": "Transfer Received",
+        "amount": amount,
+        "date": transfer_date,
+        "reference": reference,
+        "sender": sender_number,
+        "status": "Completed"
+    })
+
+    # Save both account updates together.
+    if not save_updated_accounts(accounts):
+        return
+
+    messagebox.showinfo(
+        "Transfer Successful",
+        f"₦{amount:,.2f} has been successfully transferred "
+        f"to {recipient['name']}.\n\n"
+        f"Reference: {reference}"
+    )
+
+    # Refresh the sender's dashboard and transaction history.
+    refresh_dashboard()
+    refresh_transaction_history()
+
 
     
 tk.Button(
@@ -2598,10 +2719,8 @@ tk.Button(
     relief="flat",
     bd=0,
     cursor="hand2",
-    command=lambda: messagebox.showinfo(
-        "Smart ATM Transfer",
-        "Transfer processing will be connected shortly."
-    )
+    command=process_smart_transfer
+    
 ).pack(
     fill="x",
     ipady=13,
