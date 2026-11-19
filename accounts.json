@@ -54,7 +54,7 @@
         "phone": "08036339199",
         "pin_salt": "d8feffc161f4f506b7b7a093127688ff",
         "pin_hash": "38419d3764b80db410d51211917a1566e6ae22ed23ebd45535f1640ed0a9e9e6",
-        "balance": 3000,
+        "balance": 1003000.0,
         "transactions": [
             {
                 "type": "Deposit",
@@ -65,8 +65,17 @@
                 "type": "Withdrawal",
                 "amount": 2000,
                 "date": "2026-11-10 16:23:02"
+            },
+            {
+                "type": "Transfer Received",
+                "amount": 1000000.0,
+                "date": "2026-11-19 15:52:16",
+                "reference": "4A23C3AF741ACB20",
+                "sender": "1822606367",
+                "status": "Completed"
             }
-        ]
+        ],
+        "loans": []
     },
     "1196026374": {
         "name": "zion ojonele",
@@ -118,7 +127,7 @@
         "phone": "07087245436",
         "pin_salt": "3fc93dd4c75080b0c614227d8de2b412",
         "pin_hash": "5d7493f7f6586cff70471e8606b8367b9174c93c94c45ea62c4364a957e138c5",
-        "balance": 5043500.0,
+        "balance": 4043500.0,
         "transactions": [
             {
                 "type": "Deposit",
@@ -239,6 +248,14 @@
                 "date": "2026-11-19 14:37:57",
                 "application_id": "39790C76EBDBB9BD",
                 "status": "Simulated"
+            },
+            {
+                "type": "Transfer",
+                "amount": 1000000.0,
+                "date": "2026-11-19 15:52:16",
+                "reference": "4A23C3AF741ACB20",
+                "recipient": "8884870248",
+                "status": "Completed"
             }
         ],
         "loans": [
