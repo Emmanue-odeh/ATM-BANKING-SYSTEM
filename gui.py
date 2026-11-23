@@ -2268,7 +2268,14 @@ def handle_transfer():
     beneficiary_number = beneficiary_account_entry.get().strip()
     raw_amount = transfer_amount_entry.get().strip()
 
+    messagebox.showinfo(
+    "Account Number Debug",
+    f"Value: {repr(beneficiary_number)}\n"
+    f"Length: {len(beneficiary_number)}\n"
+    f"Digits only: {beneficiary_number.isdigit()}"
+ )
 
+    
     if not bank_name or bank_name not in bank_options:
 
         transfer_message.config(

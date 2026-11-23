@@ -115,7 +115,8 @@
                 "amount": 2000,
                 "date": "2026-11-11 11:01:18"
             }
-        ]
+        ],
+        "loans": []
     },
     "1782380963": {
         "name": "odeh emmanuel",
@@ -148,7 +149,7 @@
         "phone": "07087245436",
         "pin_salt": "3fc93dd4c75080b0c614227d8de2b412",
         "pin_hash": "5d7493f7f6586cff70471e8606b8367b9174c93c94c45ea62c4364a957e138c5",
-        "balance": 4043500.0,
+        "balance": 3543500.0,
         "transactions": [
             {
                 "type": "Deposit",
@@ -277,6 +278,16 @@
                 "reference": "4A23C3AF741ACB20",
                 "recipient": "8884870248",
                 "status": "Completed"
+            },
+            {
+                "type": "Transfer",
+                "amount": 500000.0,
+                "bank": "OPay",
+                "beneficiary": "odeh emmanuel",
+                "beneficiary_account": "9130837623",
+                "reference": "SATM79E57ACA",
+                "date": "2026-11-23 11:30:33",
+                "status": "Simulated"
             }
         ],
         "loans": [
