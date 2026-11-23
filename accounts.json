@@ -35,7 +35,7 @@
         "phone": "07087245436",
         "pin_salt": "732fe8f70c0423859be0859fdebb2e97",
         "pin_hash": "fa283fa9a527a2577b04838844c5f9c806d86891882edf1ea2f3c0c1262d15f3",
-        "balance": 8000,
+        "balance": 58000.0,
         "transactions": [
             {
                 "type": "Deposit",
@@ -46,6 +46,14 @@
                 "type": "Withdrawal",
                 "amount": 2000,
                 "date": "2026-11-10 15:35:24"
+            },
+            {
+                "type": "Transfer Received",
+                "amount": 50000.0,
+                "date": "2026-11-23 10:32:37",
+                "reference": "EDAD972104E44742",
+                "sender": "8884870248",
+                "status": "Completed"
             }
         ]
     },
@@ -54,7 +62,7 @@
         "phone": "08036339199",
         "pin_salt": "d8feffc161f4f506b7b7a093127688ff",
         "pin_hash": "38419d3764b80db410d51211917a1566e6ae22ed23ebd45535f1640ed0a9e9e6",
-        "balance": 1003000.0,
+        "balance": 953500.0,
         "transactions": [
             {
                 "type": "Deposit",
@@ -72,6 +80,19 @@
                 "date": "2026-11-19 15:52:16",
                 "reference": "4A23C3AF741ACB20",
                 "sender": "1822606367",
+                "status": "Completed"
+            },
+            {
+                "type": "Deposit",
+                "amount": 500.0,
+                "date": "2026-11-23 09:46:33"
+            },
+            {
+                "type": "Transfer",
+                "amount": 50000.0,
+                "date": "2026-11-23 10:32:37",
+                "reference": "EDAD972104E44742",
+                "recipient": "2455339747",
                 "status": "Completed"
             }
         ],

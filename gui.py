@@ -2524,7 +2524,7 @@ def verify_smart_recipient():
 
 
 
-def process_smart_transfer():
+def _process_smart_transfer():
 
     # Get the sender's account number.
     sender_number = current_account_number
@@ -2587,6 +2587,8 @@ def process_smart_transfer():
         return
 
         # Display the transfer details for confirmation.
+
+
     confirm = messagebox.askyesno(
         "Confirm Smart ATM Transfer",
         f"Recipient: {recipient['name']}\n"
@@ -2596,7 +2598,13 @@ def process_smart_transfer():
     )
 
     if not confirm:
+        smart_transfer_button.config(state="normal")
+
         return
+
+
+     # Disable the transfer button while processing
+
 
         # Ask the sender to enter their PIN.
     pin = simpledialog.askstring(
@@ -2614,6 +2622,8 @@ def process_smart_transfer():
             "Security Error",
             "Incorrect PIN. Transfer cancelled."
         )
+        
+
         return
 
         # Generate a unique transfer reference.
@@ -2665,7 +2675,18 @@ def process_smart_transfer():
     refresh_dashboard()
     refresh_transaction_history()
 
+        # Enable the transfer button again.
+def process_smart_transfer():
 
+    # Disable the button while the transfer runs.
+    smart_transfer_button.config(state="disabled")
+
+    try:
+        _process_smart_transfer()
+
+    finally:
+        # Always make the button available again.
+        smart_transfer_button.config(state="normal")
     
 tk.Button(
     smart_transfer_card,
@@ -2709,7 +2730,7 @@ smart_transfer_amount_entry.pack(
     ipady=12
 )
 
-tk.Button(
+smart_transfer_button = tk.Button(
     smart_transfer_card,
     text="TRANSFER MONEY",
     font=("Arial", 10, "bold"),
@@ -2721,7 +2742,9 @@ tk.Button(
     cursor="hand2",
     command=process_smart_transfer
     
-).pack(
+)
+
+smart_transfer_button.pack(
     fill="x",
     ipady=13,
     pady=(20, 0)
