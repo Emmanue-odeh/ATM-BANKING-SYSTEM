@@ -326,5 +326,36 @@
         "pin_hash": "a722f9e01ee6e2ef69e1469ab136f1b977a0667aa8dcbb67590797f2a36868eb",
         "balance": 0,
         "transactions": []
+    },
+    "3874378772": {
+        "name": "igabasi solomon",
+        "phone": "08133640285",
+        "pin_salt": "3da6c53be6c2f5a56257ce80391742ef",
+        "pin_hash": "4d0def8be93b8ba49db37c19472b528c3ed653b00f9cafd408963c0e4cb35f2e",
+        "balance": 10000,
+        "transactions": [
+            {
+                "type": "Loan Credit",
+                "amount": 10000,
+                "date": "2026-11-23 14:53:58",
+                "application_id": "AA432619BC770A49",
+                "status": "Simulated"
+            }
+        ],
+        "loans": [
+            {
+                "application_id": "AA432619BC770A49",
+                "principal": 10000,
+                "interest": 1000.0,
+                "total_due": 11000.0,
+                "amount_repaid": 0,
+                "outstanding_balance": 11000.0,
+                "status": "active",
+                "applied_at": "2026-11-23T14:50:57.915575",
+                "review_until": "2026-11-23T14:53:57.915575",
+                "approved_at": "2026-11-23T14:53:58.364094",
+                "repayment_due_at": "2026-12-23T14:53:58.364094"
+            }
+        ]
     }
 }
